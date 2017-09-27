@@ -21,7 +21,7 @@ def executa_comando(name):
     chdir('../')
     return out
 
-
+# Cria uma nova vtask
 def vtask_new():
     global vtid
     global basedir
@@ -42,22 +42,12 @@ def vtask_kill(vtid):
         shutil.rmtree(vtask['name'])
         vtask_list.remove(vtask)
 
-    return "deleted"
-
-def vtask_all():
-    global vtask_list
-    return vtask_list
-
-# Cria um novo virtual envirorment
-def new_ve(name):
-    pass
 
 server = SimpleXMLRPCServer(("localhost", 8000), requestHandler=RequestHandler, allow_none=True)
 server.register_introspection_functions()
 server.register_function(pow)
 server.register_function(vtask_new)
 server.register_function(vtask_kill)
-server.register_function(vtask_all)
 server.register_function(executa_comando)
 server.register_function(lambda x,y: x+y, 'add')
 
