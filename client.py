@@ -6,8 +6,13 @@ vtask_id = s.vtask_new()
 print("Created vtask")
 while True:
     cmd = raw_input("vtask:"+str(vtask_id)+"> ")
-    print(s.executa_comando(cmd))
     if cmd == "exit":
         print("Destroying vtask...")
-        s.vtask_kill(vtask_id)
+        print(s.vtask_kill(vtask_id))
         break
+
+    if cmd == "dir":
+        print(s.show_dir())
+        continue
+    
+    print(s.executa_comando(cmd, vtask_id))

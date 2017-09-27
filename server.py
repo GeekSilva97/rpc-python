@@ -11,11 +11,17 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 
 vtid = 0
 vtask_list = []
+DIR = getcwd()
 basedir = getcwd()
 
-def executa_comando(name):
-    global basedir
-    chdir(basedir)
+def get_vtask(vtid):
+    global vtask_list
+    return [x for x in vtask_list if x['vtid'] == vtid][0]
+
+def executa_comando(name, vtid):
+    global vtask_list
+    l = [item for item in vtask_list if item['vtid'] == vtid]
+    chdir(l[0]['name'])
     get = subprocess.Popen(name, shell=True, stdout=subprocess.PIPE)
     out = get.communicate()[0]
     chdir('../')
@@ -24,23 +30,31 @@ def executa_comando(name):
 # Cria uma nova vtask
 def vtask_new():
     global vtid
-    global basedir
+    global vtask_list
     vtid += 1
     name = str(time())+"vtask"
-    vtask_list.append({'vtid':vtid, 'name':name})
+    dirname = getcwd()+"/"+name
+    vtask_list.append({'vtid':vtid, 'name':name, 'dir':dirname})
     create = subprocess.Popen('virtualenv '+name, shell=True, stdout=subprocess.PIPE)
     out = create.communicate()
-    basedir += "/"+name
     return vtid
 
 # Destroy uma vtask
 def vtask_kill(vtid):
+    global DIR
     global vtask_list
     l = [item for item in vtask_list if item['vtid'] == vtid]
     if len(l) > 0:
         vtask = l[0]
+        # chdir(DIR)
         shutil.rmtree(vtask['name'])
         vtask_list.remove(vtask)
+
+    return vtask
+
+def show_dir():
+    global basedir
+    return basedir
 
 
 server = SimpleXMLRPCServer(("localhost", 8000), requestHandler=RequestHandler, allow_none=True)
@@ -49,6 +63,5 @@ server.register_function(pow)
 server.register_function(vtask_new)
 server.register_function(vtask_kill)
 server.register_function(executa_comando)
-server.register_function(lambda x,y: x+y, 'add')
-
+server.register_function(show_dir)
 server.serve_forever()
