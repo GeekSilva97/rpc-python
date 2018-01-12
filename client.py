@@ -1,5 +1,5 @@
 from xmlrpclib import ServerProxy
-server = "http://localhost:8000"
+server = "http://localhost:8000" # define server address
 s = ServerProxy(server)
 print("Creating vtask....")
 vtask_id = s.vtask_new()

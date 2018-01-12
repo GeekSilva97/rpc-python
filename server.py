@@ -59,6 +59,8 @@ def show_dir():
 
 server = SimpleXMLRPCServer(("localhost", 8000), requestHandler=RequestHandler, allow_none=True)
 server.register_introspection_functions()
+
+# registering functions to make a remote call
 server.register_function(pow)
 server.register_function(vtask_new)
 server.register_function(vtask_kill)
